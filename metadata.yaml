@@ -19,12 +19,3 @@ requires:
 peers:
     cluster:
         interface: nats-cluster
-resources:
-    core:
-        type: file
-        filename: core.snap
-        description: core snap
-    nats:
-        type: file
-        filename: nats.snap
-        description: NATS snap to install

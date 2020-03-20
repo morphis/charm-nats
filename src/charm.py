@@ -74,26 +74,8 @@ class NatsCharm(CharmBase):
         self.framework.observe(self.ca_client.on.ca_available, self)
 
     def on_install(self, event):
-        try:
-            core_res = self.model.resources.fetch('core')
-        except ModelError:
-            core_res = None
-        try:
-            nats_res = self.model.resources.fetch('nats')
-        except ModelError:
-            nats_res = None
-
-        cmd = ['snap', 'install']
-        # Install the snaps from a resource if provided. Alternatively, snapd
-        # will attempt to download it automatically.
-        if core_res is not None and Path(core_res).stat().st_size:
-            subprocess.check_call(cmd + ['--dangerous', core_res])
-        nats_cmd = cmd
-        if nats_res is not None and Path(nats_res).stat().st_size:
-            nats_cmd += ['--dangerous', nats_res]
-        else:
-            channel = self.model.config['snap-channel']
-            nats_cmd += ['nats', '--channel', channel]
+        channel = self.model.config['snap-channel']
+        nats_cmd = ['snap', 'install', 'nats', '--channel', channel]
         subprocess.check_call(nats_cmd)
         subprocess.check_call(['snap', 'stop', 'nats', '--disable'])
         self.SERVER_PATH.mkdir(exist_ok=True, mode=0o0700)
